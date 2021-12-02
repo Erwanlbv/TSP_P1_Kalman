@@ -21,9 +21,6 @@ def filtre_de_kalman(F, Q, H, R, y_k, x_kalm_prec, P_kalm_prec):
 
     #Partie prédiction :
     x_pred_suiv = F.dot(x_kalm_prec)
-    print(F.shape)
-    print(P_kalm_prec.shape)
-    print(Q.shape)
     P_pred_suiv = F.dot(P_kalm_prec.dot(np.transpose(F))) + Q
 
     #Partie filtrage :
@@ -47,6 +44,23 @@ def get_P_and_K(P_init, H, Q, R, F, n):
             results[0][-1].dot(np.transpose(H).dot(np.linalg.inv(H.dot(results[0][-1].dot(np.transpose(H))) + R)))
         )
     return results
+
+
+def err_quadra(x_real, x_est): #Erreur non rapportée à X (seulement un produit) -> Comment pourrait-elle être interprétable ?
+    return (x_real - x_est).dot(np.transpose(x_real - x_est))
+    #Critique sur le format de l'erreur calculée si on applique directement la formule donnée par l'énonce (on fait
+    #Des erreur sur les vitesses, mais aussi on compare la vitesse estimée et la position réelle .. bref
+    #Et sur la dimension de l'erreur : c'est une position, or X varie de 0 à 8000 donc l'interprétab.. (voir début)
+
+
+def average_err(X_real, X_est): #Format 4*n
+    return np.array([[np.sqrt(err_quadra(X_real[0], X_est[0])), np.sqrt(err_quadra(X_real[2], X_est[2]))]])/len(X_real[0])
+
+
+
+
+
+
 
 
 
