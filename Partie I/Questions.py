@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.io
 
 from variables import *
+from fichiers_donnees import *
 from main import *
 
 
@@ -22,7 +24,7 @@ def question4():
 
 
 def question7():
-    n = 200
+    n = 100
     result_matrix = np.zeros((n, 4), dtype='float64')
     result_matrix[0] = np.transpose(x_init)
     all_P = np.zeros((P_kaml.shape[0], P_kaml.shape[1], n), dtype='float64')
@@ -40,7 +42,7 @@ def question7():
     final_result_matrix = np.transpose(result_matrix)
 
     fig = plt.figure()
-    fig.suptitle('Erreur moyenne : ' + str(average_err(final_result_matrix, all_evol)))
+    fig.suptitle('Erreur vectorielle moyenne : ' + str(avg_erro_vect(final_result_matrix, all_evol)))
     plt.plot(final_result_matrix[0], final_result_matrix[2], color='blue', label='X_est', alpha=0.7)
     plt.plot(all_evol[0], all_evol[2], color='orange', label='X_orig', alpha=0.7)
     plt.legend()
@@ -66,7 +68,7 @@ def question9():
 
     final_result_matrix = np.transpose(result_matrix)
     fig, axs = plt.subplots(3, 1, figsize=(16, 9))
-    fig.suptitle('Erreur moyenne sur la position ' + str(average_err(final_result_matrix, all_evol)), fontsize=18)
+    fig.suptitle('Erreur moyenne sur la position ' + str(avg_erro_vect(final_result_matrix, all_evol)), fontsize=18)
 
     axs[0].plot(all_evol[0], 'r', label='x_real', alpha=0.7)
     axs[0].plot(final_result_matrix[0], label='x_est', alpha=0.7)
@@ -86,10 +88,41 @@ def question9():
     fig.tight_layout()
     fig.show()
 
+# ----- Partie Application -----
+
+
+def question3():
+    n = 100
+    result_matrix = np.zeros((n, 4), dtype='float64')
+    result_matrix[0] = np.transpose(x_init)
+    all_P = np.zeros((P_kaml.shape[0], P_kaml.shape[1], n), dtype='float64')
+
+    for name in ['ligne', 'voltige']:
+        all_evol = scipy.io.loadmat('fichiers_donnees/vecteur_x_avion_' + name + '.mat')['vecteur_x']
+        all_obs = scipy.io.loadmat('fichiers_donnees/vecteur_y_avion_' + name + '.mat')['vecteur_y']
+
+        all_obs_available = [np.transpose(all_obs)[0]]
+        for i in range(1, n): #Utilisation du fichier 'all_obs_available' dans le cas où plusieurs observations qui se suivent ne sont pas disponibles
+            all_obs_available.append(np.transpose(all_obs)[i])
+            [result_matrix[i], all_P[:, :, i]] = filtre_de_kalman_with_gap(F, Q, H, R,
+                                                                           all_obs_available,
+                                                                           result_matrix[i-1],
+                                                                           all_P[:, :, i-1])
+
+
+        final_result_matrix = np.transpose(result_matrix)
+        fig = plt.figure()
+        fig.suptitle('Erreur vectorielle moyenne cas : ' + name + ' ' + str(avg_erro_vect(final_result_matrix, all_evol)))
+        plt.plot(final_result_matrix[0], final_result_matrix[2], color='blue', label='X_est', alpha=0.7)
+        plt.plot(all_evol[0], all_evol[2], color='orange', label='X_orig', alpha=0.7)
+        plt.legend()
+        plt.show()
+
 
 #question4()
 #question7()
-question9()
+#question9()
+question3()
 
 
 
