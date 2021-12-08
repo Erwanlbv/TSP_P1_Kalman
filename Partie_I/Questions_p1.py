@@ -2,24 +2,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io
 
-from variables import *
-from fichiers_donnees import *
-from main import *
+from variables_p1 import *
+from main_p1 import *
 
 
 def question4():
     X = creer_trajectoire(F, Q, x_init, T)
     Y = creer_observation(H, R, X)
 
-    fig, axs = plt.subplots(2, 1, figsize=(16, 9))
+    fig = plt.figure(figsize=(16, 9))
     fig.suptitle('Trajectoire et observation', fontsize=18)
-    axs[0].plot(X[0], X[2], label='Vraie trajectoire', color='orange', alpha=0.7)
-    axs[0].set_title('X')
-    axs[0].plot(Y[0], Y[1],  label='Trajectoire observée', color='blue', alpha=0.7)
-
-    for ax in axs.flat:
-        ax.legend()
-
+    plt.plot(X[0], X[2], label='Vraie trajectoire', color='orange', alpha=0.7)
+    plt.scatter(Y[0], Y[1],  label='Trajectoire observée', color='blue', alpha=0.4)
+    plt.legend()
     plt.show()
 
 
@@ -50,7 +45,7 @@ def question7():
 
 
 def question9():
-    n = 200
+    n = 100
     result_matrix = np.zeros((n, 4), dtype='float64')
     result_matrix[0] = np.transpose(x_init)
 
@@ -78,8 +73,9 @@ def question9():
     axs[1].plot(final_result_matrix[2], label='y_est', alpha=0.7)
     axs[1].set_title('Suivi de trajectoire sur y', fontsize=16)
 
-    axs[2].plot(final_result_matrix[0], final_result_matrix[2], color='blue', label='X_est', alpha=0.7)
-    axs[2].plot(all_evol[0], all_evol[2], color='orange', label='X_orig', alpha=0.7)
+    axs[2].plot(final_result_matrix[0], final_result_matrix[2], color='blue', label='Position estimée', alpha=0.7)
+    axs[2].plot(all_evol[0], all_evol[2], color='orange', label='Position réelle', alpha=0.7)
+    axs[2].scatter(all_obs[0], all_obs[1], color='red', label='Position mesurée', alpha=0.4)
     axs[2].set_title('Suivi de la position', fontsize=16)
 
     for ax in axs.flat:
@@ -102,7 +98,7 @@ def question3():
         all_obs = scipy.io.loadmat('fichiers_donnees/vecteur_y_avion_' + name + '.mat')['vecteur_y']
 
         all_obs_available = [np.transpose(all_obs)[0]]
-        for i in range(1, n): #Utilisation du fichier 'all_obs_available' dans le cas où plusieurs observations qui se suivent ne sont pas disponibles
+        for i in range(1, n): #Utilisation de 'all_obs_available' dans le cas où plusieurs observations qui se suivent ne sont pas disponibles
             all_obs_available.append(np.transpose(all_obs)[i])
             [result_matrix[i], all_P[:, :, i]] = filtre_de_kalman_with_gap(F, Q, H, R,
                                                                            all_obs_available,
@@ -111,6 +107,7 @@ def question3():
 
 
         final_result_matrix = np.transpose(result_matrix)
+
         fig = plt.figure()
         fig.suptitle('Erreur vectorielle moyenne cas : ' + name + ' ' + str(avg_erro_vect(final_result_matrix, all_evol)))
         plt.plot(final_result_matrix[0], final_result_matrix[2], color='blue', label='X_est', alpha=0.7)
@@ -121,10 +118,17 @@ def question3():
 
 #question4()
 #question7()
-#question9()
-question3()
+question9()
+#question3()
 
-
+"""fig = plt.figure()
+vecteur_x = creer_trajectoire(F, Q, x_init, 100)
+vecteur_obs = creer_observation(H, R, vecteur_x)
+plt.plot(vecteur_x[0], vecteur_x[2], label='Trajectoire réelle', alpha=0.7)
+plt.scatter(vecteur_obs[0], vecteur_obs[1], label='Trajectoire bruitée', alpha=0.4, color='orange')
+plt.legend()
+plt.show()
+"""
 
 
 
