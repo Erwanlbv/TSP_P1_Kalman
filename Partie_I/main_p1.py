@@ -5,8 +5,8 @@ def creer_trajectoire(F, Q, x_init, T): #Format 4*n
     trajectoire = np.zeros((100, 4), dtype='float64')
     trajectoire[0] = x_init
     for i in range(1, T):
-        trajectoire[i] = np.transpose(F.dot(trajectoire[i-1]))
-    return np.transpose(trajectoire) + np.transpose(np.random.multivariate_normal(np.zeros(4), Q, T))
+        trajectoire[i] = F.dot(trajectoire[i-1]) + np.random.multivariate_normal(np.zeros(4), Q)
+    return trajectoire.transpose()
 
 
 def creer_observation(H, R, vecteur_x): #Format 2*n
