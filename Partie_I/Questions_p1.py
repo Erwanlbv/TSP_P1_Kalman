@@ -38,16 +38,16 @@ def question7():
 
     final_result_matrix = np.transpose(result_matrix)
 
-    print(" Valeurs pour les prédictions : ")
-    print(final_result_matrix.transpose()[:10])
-    print('Valeurs des positions exactes')
-    print(all_evol.transpose()[:10])
-    print("Valeurs pour les K : ")
-    print(all_K[:10])
+    #print(" Valeurs pour les prédictions : ")
+    #print(final_result_matrix.transpose()[:10])
+    #print('Valeurs des positions exactes')
+    #print(all_evol.transpose()[:10])
+    #print("Valeurs pour les K : ")
+    #print(all_K[:10])
 
     fig = plt.figure(figsize=(12, 7))
-    fig.suptitle('Erreur vectorielle moyenne : ' + str(avg_erro_vect(final_result_matrix, all_evol)) + '\n' +
-                 'sigma_Q = ' + str(sigma_Q) + '\n' + 'sigma_px = ' + str(sigma_px) +' sigma_py =' + str(sigma_py),
+    fig.suptitle('Erreur vectorielle : ' + str(np.round(avg_erro_vect(final_result_matrix, all_evol), 3)) + '\n' +
+                 'sigma_Q = ' + str(sigma_Q) + '\n' + 'sigma_px = ' + str(sigma_px) + ' sigma_py = ' + str(sigma_py),
                  fontsize=14)
 
     print("Erreur séparée : ")
@@ -70,14 +70,15 @@ def question7_pred_only():
     all_obs = creer_observation(H, R, all_evol)
 
     for i in range(1, n):
-        result_matrix[i] = F.dot(result_matrix[i-1]) + np.transpose(np.random.multivariate_normal(np.zeros(4), Q))
+        result_matrix[i] = F.dot(result_matrix[i-1])
 
     final_result_matrix = np.transpose(result_matrix)
 
     fig = plt.figure(figsize=(12, 7))
-    fig.suptitle('Erreur vectorielle moyenne : ' + str(avg_erro_vect(final_result_matrix, all_evol)) + '\n' +
-                 'sigma_Q = ' + str(sigma_Q) + '\n' + 'sigma_px = ' + str(sigma_px) + ' sigma_py =' + str(sigma_py),
+    fig.suptitle('Erreur vectorielle moyenne : ' + str(np.round(avg_erro_vect(final_result_matrix, all_evol), 2)) + '\n' +
+                 'sigma_Q = ' + str(sigma_Q),
                  fontsize=14)
+
     plt.plot(final_result_matrix[0], final_result_matrix[2], color='blue', label='X_est', alpha=0.7)
     plt.plot(all_evol[0], all_evol[2], color='orange', label='X_orig', alpha=0.7)
     plt.scatter(all_obs[0], all_obs[1], color='red', label='Observations', alpha=0.2)
@@ -294,10 +295,11 @@ def question_3():
 
 
 #question4()
-#question7()
+question7()
+#question7_pred_only()
 #question_7_new_mes()
 #question9()
-question_3()
+#question_3()
 
 """fig = plt.figure()
 vecteur_x = creer_trajectoire(F, Q, x_init, 100)

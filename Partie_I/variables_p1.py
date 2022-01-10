@@ -2,8 +2,8 @@ import numpy as np
 
 Te = 1
 T = 100
-sigma_Q = 1
-sigma_px = 100
+sigma_Q = 100
+sigma_px = 1
 sigma_py = sigma_px
 x_init = np.array([3, 40, -4, 20], dtype='float64')
 
