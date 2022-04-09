@@ -1,4 +1,5 @@
 MAT 45 01 - TP n°2
 
 Filtrage de Kalman appliqué à du suivi de position
-Rapport accessible directement au format pdf dans le dossier "Rapport"
+
+Le rapport accessible directement au format pdf dans le dossier "Rapport"
